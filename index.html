@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantik Kitap Öneri Botu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Açık gri arka plan */
+        }
+        .container-box {
+            background-color: #ffffff; /* Beyaz kutu arka planı */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Hafif gölge */
+            border-radius: 1.5rem; /* Yuvarlak köşeler */
+            padding: 2rem;
+            max-width: 600px;
+        }
+        .btn-primary {
+            background-color: #ef4444; /* Kırmızı tonu */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem; /* Yuvarlak köşeler */
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #dc2626; /* Koyu kırmızı tonu */
+        }
+        .option-button {
+            background-color: #f9fafb; /* Çok açık gri */
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            text-align: left;
+            width: 100%;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .option-button:hover {
+            background-color: #e0e7ff; /* Mavi tonu */
+            border-color: #6366f1; /* Koyu mavi kenarlık */
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div id="app" class="container-box w-full mx-4">
+        <div id="start-screen" class="text-center p-6">
+            <img src="https://www.nemesiskitap.com/assets/logo.png" alt="Nemesis Kitap Logosu" class="mx-auto mb-6 max-h-20 w-auto">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Romantik Kitap Öneri Botu</h1>
+            <p class="text-gray-600 mb-8">Romantik kitaplarda neleri sevdiğinizi öğrenmek için testi çözün, size özel bir kitap önerisi alın!</p>
+            <button id="start-quiz-btn" class="btn-primary">Testi Başlat</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden p-6">
+            <h2 id="question-text" class="text-2xl font-semibold text-gray-700 mb-6"></h2>
+            <div id="options-container" class="space-y-4">
+                </div>
+            <p class="text-sm text-gray-500 mt-6 text-right">Soru <span id="current-question-number">1</span> / <span id="total-questions"></span></p>
+        </div>
+
+        <div id="results-screen" class="hidden text-center p-6">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Sana Özel Öneri!</h2>
+            <div id="recommended-book" class="flex flex-col md:flex-row items-center justify-center gap-6 p-6 bg-red-50 rounded-xl mb-8">
+                <img id="book-image" src="" alt="Kitap Kapağı" class="w-48 h-auto rounded-lg shadow-md mb-4 md:mb-0">
+                <div class="text-left">
+                    <h3 id="book-title" class="text-2xl font-bold text-red-700 mb-2"></h3>
+                    <p id="book-author" class="text-xl text-gray-700 mb-3"></p>
+                    <p id="book-description" class="text-gray-600 mb-4 leading-relaxed"></p>
+                    <a id="book-link" href="#" target="_blank" class="btn-primary inline-block text-center hover:underline">Kitabı İncele</a>
+                </div>
+            </div>
+            <button id="restart-quiz-btn" class="btn-primary">Tekrar Test Yap</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz soruları ve seçenekleri
+        const questions = [
+            {
+                question: "Romantik bir hikayede sizi en çok ne çeker?",
+                options: [
+                    { text: "Yavaşça gelişen, gerçekçi bir ilişki", tags: ["slow-burn", "realistic"] },
+                    { text: "Arkadaşlıktan aşka dönüşen dinamikler", tags: ["friends-to-lovers"] },
+                    { text: "Zeki ve mizahi atışmalar", tags: ["witty-humor", "clever-dialogue"] },
+                    { text: "Yoğun, tutkulu ve dramatik olaylar", tags: ["intense-drama", "passionate"] },
+                    { text: "Beklenmedik karşılaşmalar ve karşıt karakterler", tags: ["unexpected-meetings", "opposites-attract"] }
+                ]
+            },
+            {
+                question: "Ana karakterlerde hangi özellikleri tercih edersiniz?",
+                options: [
+                    { text: "Kararlı, hırslı ve bazen mesafeli", tags: ["strong-willed", "ambitious", "reserved"] },
+                    { text: "Esprili, sevimli ve biraz sakar", tags: ["witty", "charming", "quirky"] },
+                    { text: "Gizemli, karmaşık ve derin", tags: ["mysterious", "complex", "deep"] },
+                    { text: "Sıradan ama içten ve samimi", tags: ["ordinary", "sincere"] },
+                    { text: "Sanatsal ruhlu ve yaratıcı", tags: ["artistic", "creative"] }
+                ]
+            },
+            {
+                question: "Favori romantik ortamınız nedir?",
+                options: [
+                    { text: "Üniversite kampüsü veya spor alanı", tags: ["campus-setting", "sports"] },
+                    { text: "Modern bir şehirde günlük hayat", tags: ["modern-city", "daily-life"] },
+                    { text: "Tehlikeli veya yeraltı dünyası", tags: ["dangerous-underworld"] },
+                    { text: "Tarihi ve epik mekanlar", tags: ["historical-epic"] },
+                    { text: "Sanat galerileri veya kültürel etkinlikler", tags: ["art-gallery", "cultural"] }
+                ]
+            },
+            {
+                question: "Bir aşk hikayesinde sizi en çok ne etkiler?",
+                options: [
+                    { text: "Engellerin aşılması ve zorluklarla mücadele", tags: ["overcoming-obstacles"] },
+                    { text: "Karakterlerin kişisel gelişimleri", tags: ["personal-growth"] },
+                    { text: "Aşkın hayatı dönüştürücü gücü", tags: ["transformative-love"] },
+                    { text: "Gerilim ve çekişmeyle dolu bir ilişki", tags: ["tension-rivalry"] },
+                    { text: "Komik durumlar ve yanlış anlaşılmalar", tags: ["humorous-situations"] }
+                ]
+            }
+        ];
+
+        // Kitap verileri ve etiketleri
+        const books = [
+            {
+                title: "En Yakın Arkadaşını Baştan Çıkarmanın 10 Yolu",
+                author: "Penny Reid",
+                description: "En yakın arkadaşının kalbini çalmak için eğlenceli ve mizahi bir rehber. Zeki diyaloglar ve arkadaşlıktan aşka dönüşen bir hikaye.",
+                image: "https://cms.umkii.com/uploads/en_yakin_arkadasini_3_D_2_3ba6c12b4c.png",
+                url: "https://www.nemesiskitap.com/books/en-yakin-arkadasini-bastan-cikarmanin-on-yolu",
+                tags: ["friends-to-lovers", "witty-humor", "clever-dialogue", "modern-city", "humorous-situations", "charming"]
+            },
+            {
+                title: "Kulti",
+                author: "Mariana Zapata",
+                description: "Profesyonel futbolcu Kulti ve futbolcu Salome'nin yavaşça gelişen, yoğun ve gerçekçi aşk hikayesi. Azim ve tutku dolu.",
+                image: "https://cms.umkii.com/uploads/Kulti_3_D_2_8c5e29c321.jpg",
+                url: "https://www.nemesiskitap.com/books/kulti",
+                tags: ["slow-burn", "realistic", "sports", "strong-willed", "ambitious", "campus-setting"]
+            },
+            {
+                title: "Graham Etkisi",
+                author: "Elle Kennedy",
+                description: "Üniversite ortamında geçen, mizahi ve eğlenceli bir aşk hikayesi. Tatlı-sert diyaloglar ve arkadaşlık bağı.",
+                image: "https://cms.umkii.com/uploads/graham_3d_12bd116968.png",
+                url: "https://www.nemesiskitap.com/books/graham-etkisi",
+                tags: ["friends-to-lovers", "witty-humor", "campus-setting", "humorous-situations", "charming"]
+            },
+            {
+                title: "Şah ve Mat",
+                author: "Ali Hazelwood",
+                description: "Satranç dünyasında geçen, zeki ve rekabetçi bir aşk hikayesi. Akıl oyunları ve güçlü karakterler.",
+                image: "https://cms.umkii.com/uploads/sah_mat_Mckup_3_a3f6d3633c.png",
+                url: "https://www.nemesiskitap.com/books/sah-ve-mat",
+                tags: ["clever-dialogue", "tension-rivalry", "mysterious", "complex", "deep", "modern-city"]
+            },
+            {
+                title: "Geriye Kalanlar Sergisi",
+                author: "Jennifer Chen",
+                description: "Sanat ve duygusal derinliğin iç içe geçtiği bir hikaye. Kendini keşfetme ve anlamlı bağlantılar.",
+                image: "https://cms.umkii.com/uploads/geriye_kalanlar_mock_copy_1_5fab434a1f.png",
+                url: "https://www.nemesiskitap.com/books/geriye-kalanlar-sergisi",
+                tags: ["artistic", "creative", "emotional", "personal-growth", "art-gallery", "complex"]
+            },
+            {
+                title: "Ev Arkadaşım Bir Vampir",
+                author: "Jenna Levine",
+                description: "Beklenmedik bir vampir ev arkadaşıyla gelişen komik ve sevimli bir aşk hikayesi. Zıt kutupların çekimi.",
+                image: "https://cms.umkii.com/uploads/Ev_Arkadasim_Bir_Vampir_3_D_1bae9d16a7.png",
+                url: "https://www.nemesiskitap.com/books/ev-arkadasim-bir-vampir",
+                tags: ["unexpected-meetings", "opposites-attract", "witty-humor", "humorous-situations", "ordinary", "modern-city"]
+            },
+            {
+                title: "Rota 14 Günde Aşk",
+                author: "Eda Yıldırım",
+                description: "Tatil rotasında beklenmedik bir aşkın filizlendiği, eğlenceli ve keyifli bir hikaye. Romantizm ve keşif dolu bir yolculuk.",
+                image: "https://cms.umkii.com/uploads/rota_14_guende_ask_mockp_1_6cc6d7315c.png",
+                url: "https://www.nemesiskitap.com/books/rota-14-gunde-ask",
+                tags: ["ordinary", "sincere", "daily-life", "personal-growth", "humorous-situations", "charming", "unexpected-meetings"] // Eklenen tagler
+            },
+            {
+                title: "Kaya",
+                author: "Monica McCarty",
+                description: "Tarihi İskoçya'da geçen epik ve tutkulu bir hikaye. Ciddi engellerle yüzleşen güçlü karakterler.",
+                image: "https://cms.umkii.com/uploads/Kaya_3_D_1_17b8086c52.jpg",
+                url: "https://www.nemesiskitap.com/books/kaya",
+                tags: ["intense-drama", "passionate", "strong-willed", "ambitious", "historical-epic", "overcoming-obstacles"]
+            },
+            {
+                title: "Kanlı Mafya Günlükleri 1 Onur",
+                author: "Cora Reilly",
+                description: "Mafya dünyasının tehlikeli ve tutkulu atmosferinde geçen karanlık bir aşk hikayesi. Yoğun dram ve zorlu mücadeleler.",
+                image: "https://cms.umkii.com/uploads/ONUR_mockup_1_0b476ac443.jpg",
+                url: "https://www.nemesiskitap.com/books/nemesis-book-2",
+                tags: ["intense-drama", "passionate", "strong-willed", "ambitious", "dangerous-underworld", "overcoming-obstacles"]
+            }
+        ];
+
+        // DOM elementlerini al
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const currentQuestionNumberSpan = document.getElementById('current-question-number');
+        const totalQuestionsSpan = document.getElementById('total-questions');
+        const recommendedBookDiv = document.getElementById('recommended-book');
+        const bookImage = document.getElementById('book-image');
+        const bookTitle = document.getElementById('book-title'); // Düzeltildi
+        const bookAuthor = document.getElementById('book-author');
+        const bookDescription = document.getElementById('book-description');
+        const bookLink = document.getElementById('book-link');
+        const restartQuizBtn = document.getElementById('restart-quiz-btn');
+
+        let currentQuestionIndex = 0;
+        let userPreferences = {}; // Kullanıcının tercih ettiği etiketleri ve skorlarını tutar
+
+        // Testi başlat
+        startQuizBtn.addEventListener('click', () => {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            currentQuestionIndex = 0;
+            userPreferences = {}; // Tercihleri sıfırla
+            totalQuestionsSpan.textContent = questions.length;
+            loadQuestion();
+        });
+
+        // Testi yeniden başlat
+        restartQuizBtn.addEventListener('click', () => {
+            resultsScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            // Tüm durumları başlangıç değerlerine sıfırla
+            currentQuestionIndex = 0;
+            userPreferences = {};
+        });
+
+        // Soruyu yükle
+        function loadQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const q = questions[currentQuestionIndex];
+                questionText.textContent = q.question;
+                optionsContainer.innerHTML = ''; // Önceki seçenekleri temizle
+
+                q.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option.text;
+                    button.classList.add('option-button');
+                    button.addEventListener('click', () => selectOption(option.tags));
+                    optionsContainer.appendChild(button);
+                });
+                currentQuestionNumberSpan.textContent = currentQuestionIndex + 1;
+            } else {
+                showResults();
+            }
+        }
+
+        // Seçeneği seç ve tercihleri güncelle
+        function selectOption(tags) {
+            tags.forEach(tag => {
+                userPreferences[tag] = (userPreferences[tag] || 0) + 1;
+            });
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        // Sonuçları göster
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            let bestMatch = null;
+            let highestScore = -1;
+
+            books.forEach(book => {
+                let score = 0;
+                book.tags.forEach(tag => {
+                    if (userPreferences[tag]) {
+                        score += userPreferences[tag]; // Etiket eşleşirse puan ekle
+                    }
+                });
+
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestMatch = book;
+                }
+            });
+
+            // Eğer hiçbir eşleşme bulunamazsa (ki bu senaryoda zor), ilk kitabı öner
+            if (!bestMatch) {
+                bestMatch = books[0];
+            }
+
+            bookImage.src = bestMatch.image;
+            bookImage.alt = bestMatch.title + " Kitap Kapağı";
+            bookTitle.textContent = bestMatch.title;
+            bookAuthor.textContent = bestMatch.author;
+            bookDescription.textContent = bestMatch.description;
+            bookLink.href = bestMatch.url;
+        }
+
+        // Sayfa yüklendiğinde başlangıç ekranını göster
+        document.addEventListener('DOMContentLoaded', () => {
+            startScreen.classList.remove('hidden');
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
