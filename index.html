@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Romantik Kitap Öneri Botu</title>
+    <title>Nemesis Romantik Kitap Önerileri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -50,8 +50,8 @@
     <div id="app" class="container-box w-full mx-4">
         <div id="start-screen" class="text-center p-6">
             <img src="https://www.nemesiskitap.com/assets/logo.png" alt="Nemesis Kitap Logosu" class="mx-auto mb-6 max-h-20 w-auto">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">Romantik Kitap Öneri Botu</h1>
-            <p class="text-gray-600 mb-8">Romantik kitaplarda neleri sevdiğinizi öğrenmek için testi çözün, size özel bir kitap önerisi alın!</p>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Nemesis Romantik Kitap Önerileri</h1>
+            <p class="text-gray-600 mb-8">Size özel bir kitap önerisi almak için testi çözün!</p>
             <button id="start-quiz-btn" class="btn-primary">Testi Başlat</button>
         </div>
 
@@ -119,7 +119,26 @@
                     { text: "Gerilim ve çekişmeyle dolu bir ilişki", tags: ["tension-rivalry"] },
                     { text: "Komik durumlar ve yanlış anlaşılmalar", tags: ["humorous-situations"] }
                 ]
+            },
+            // --- YENİ SORULAR ---
+            {
+                question: "Bir aşk hikayesinde sizi en çok hangi zaman dilimi cezbeder?",
+                options: [
+                    { text: "Günümüz (Modern, çağdaş hikayeler)", tags: ["modern-setting"] },
+                    { text: "Geçmiş (Tarihi, nostaljik veya zaman yolculuğu temaları)", tags: ["historical-epic", "nostalgic"] },
+                    { text: "Yakın gelecek veya fantastik/bilimkurgu unsurları olan", tags: ["paranormal", "futuristic"] }
+                ]
+            },
+            {
+                question: "Romantizmin yanı sıra, hikayede başka hangi tür unsurlar olmalı?",
+                options: [
+                    { text: "Mizah ve komedi", tags: ["witty-humor", "humorous-situations"] },
+                    { text: "Gizem veya gerilim", tags: ["mysterious", "complex", "tension-rivalry", "dangerous-underworld"] },
+                    { text: "Kişisel gelişim ve ilham verici temalar", tags: ["personal-growth", "transformative-love"] },
+                    { text: "Aksiyon veya macera", tags: ["overcoming-obstacles", "intense-drama"] }
+                ]
             }
+            // --- YENİ SORULAR BİTİŞ ---
         ];
 
         // Kitap verileri ve etiketleri
@@ -130,7 +149,7 @@
                 description: "En yakın arkadaşının kalbini çalmak için eğlenceli ve mizahi bir rehber. Zeki diyaloglar ve arkadaşlıktan aşka dönüşen bir hikaye.",
                 image: "https://cms.umkii.com/uploads/en_yakin_arkadasini_3_D_2_3ba6c12b4c.png",
                 url: "https://www.nemesiskitap.com/books/en-yakin-arkadasini-bastan-cikarmanin-on-yolu",
-                tags: ["friends-to-lovers", "witty-humor", "clever-dialogue", "modern-city", "humorous-situations", "charming"]
+                tags: ["friends-to-lovers", "witty-humor", "clever-dialogue", "modern-city", "humorous-situations", "charming", "modern-setting"]
             },
             {
                 title: "Kulti",
@@ -138,7 +157,7 @@
                 description: "Profesyonel futbolcu Kulti ve futbolcu Salome'nin yavaşça gelişen, yoğun ve gerçekçi aşk hikayesi. Azim ve tutku dolu.",
                 image: "https://cms.umkii.com/uploads/Kulti_3_D_2_8c5e29c321.jpg",
                 url: "https://www.nemesiskitap.com/books/kulti",
-                tags: ["slow-burn", "realistic", "sports", "strong-willed", "ambitious", "campus-setting"]
+                tags: ["slow-burn", "realistic", "sports", "strong-willed", "ambitious", "campus-setting", "modern-setting"]
             },
             {
                 title: "Graham Etkisi",
@@ -146,7 +165,7 @@
                 description: "Üniversite ortamında geçen, mizahi ve eğlenceli bir aşk hikayesi. Tatlı-sert diyaloglar ve arkadaşlık bağı.",
                 image: "https://cms.umkii.com/uploads/graham_3d_12bd116968.png",
                 url: "https://www.nemesiskitap.com/books/graham-etkisi",
-                tags: ["friends-to-lovers", "witty-humor", "campus-setting", "humorous-situations", "charming"]
+                tags: ["friends-to-lovers", "witty-humor", "campus-setting", "humorous-situations", "charming", "modern-setting"]
             },
             {
                 title: "Şah ve Mat",
@@ -154,7 +173,7 @@
                 description: "Satranç dünyasında geçen, zeki ve rekabetçi bir aşk hikayesi. Akıl oyunları ve güçlü karakterler.",
                 image: "https://cms.umkii.com/uploads/sah_mat_Mckup_3_a3f6d3633c.png",
                 url: "https://www.nemesiskitap.com/books/sah-ve-mat",
-                tags: ["clever-dialogue", "tension-rivalry", "mysterious", "complex", "deep", "modern-city"]
+                tags: ["clever-dialogue", "tension-rivalry", "mysterious", "complex", "deep", "modern-city", "modern-setting", "humorous-situations", "personal-growth"]
             },
             {
                 title: "Geriye Kalanlar Sergisi",
@@ -162,7 +181,7 @@
                 description: "Sanat ve duygusal derinliğin iç içe geçtiği bir hikaye. Kendini keşfetme ve anlamlı bağlantılar.",
                 image: "https://cms.umkii.com/uploads/geriye_kalanlar_mock_copy_1_5fab434a1f.png",
                 url: "https://www.nemesiskitap.com/books/geriye-kalanlar-sergisi",
-                tags: ["artistic", "creative", "emotional", "personal-growth", "art-gallery", "complex"]
+                tags: ["artistic", "creative", "emotional", "personal-growth", "art-gallery", "complex", "modern-setting"]
             },
             {
                 title: "Ev Arkadaşım Bir Vampir",
@@ -170,7 +189,7 @@
                 description: "Beklenmedik bir vampir ev arkadaşıyla gelişen komik ve sevimli bir aşk hikayesi. Zıt kutupların çekimi.",
                 image: "https://cms.umkii.com/uploads/Ev_Arkadasim_Bir_Vampir_3_D_1bae9d16a7.png",
                 url: "https://www.nemesiskitap.com/books/ev-arkadasim-bir-vampir",
-                tags: ["unexpected-meetings", "opposites-attract", "witty-humor", "humorous-situations", "ordinary", "modern-city"]
+                tags: ["unexpected-meetings", "opposites-attract", "witty-humor", "humorous-situations", "ordinary", "modern-city", "paranormal", "modern-setting"]
             },
             {
                 title: "Rota 14 Günde Aşk",
@@ -178,7 +197,7 @@
                 description: "Tatil rotasında beklenmedik bir aşkın filizlendiği, eğlenceli ve keyifli bir hikaye. Romantizm ve keşif dolu bir yolculuk.",
                 image: "https://cms.umkii.com/uploads/rota_14_guende_ask_mockp_1_6cc6d7315c.png",
                 url: "https://www.nemesiskitap.com/books/rota-14-gunde-ask",
-                tags: ["ordinary", "sincere", "daily-life", "personal-growth", "humorous-situations", "charming", "unexpected-meetings"] // Eklenen tagler
+                tags: ["ordinary", "sincere", "daily-life", "personal-growth", "humorous-situations", "charming", "unexpected-meetings", "modern-setting"]
             },
             {
                 title: "Kaya",
@@ -186,7 +205,7 @@
                 description: "Tarihi İskoçya'da geçen epik ve tutkulu bir hikaye. Ciddi engellerle yüzleşen güçlü karakterler.",
                 image: "https://cms.umkii.com/uploads/Kaya_3_D_1_17b8086c52.jpg",
                 url: "https://www.nemesiskitap.com/books/kaya",
-                tags: ["intense-drama", "passionate", "strong-willed", "ambitious", "historical-epic", "overcoming-obstacles"]
+                tags: ["intense-drama", "passionate", "strong-willed", "ambitious", "historical-epic", "overcoming-obstacles", "nostalgic"]
             },
             {
                 title: "Kanlı Mafya Günlükleri 1 Onur",
@@ -194,7 +213,15 @@
                 description: "Mafya dünyasının tehlikeli ve tutkulu atmosferinde geçen karanlık bir aşk hikayesi. Yoğun dram ve zorlu mücadeleler.",
                 image: "https://cms.umkii.com/uploads/ONUR_mockup_1_0b476ac443.jpg",
                 url: "https://www.nemesiskitap.com/books/nemesis-book-2",
-                tags: ["intense-drama", "passionate", "strong-willed", "ambitious", "dangerous-underworld", "overcoming-obstacles"]
+                tags: ["intense-drama", "passionate", "strong-willed", "ambitious", "dangerous-underworld", "overcoming-obstacles", "modern-setting"]
+            },
+            {
+                title: "Her Yazın Ardından",
+                author: "Carley Fortune",
+                description: "Yıllar boyunca yolları kesişen iki arkadaşın yaz aşkı ve karmaşık ilişkilerini anlatan, duygusal ve akılda kalıcı bir hikaye.",
+                image: "https://m.media-amazon.com/images/I/71gi7H+-J7L._SY522_.jpg",
+                url: "https://www.nemesiskitap.com/books/her-yazin-ardindan",
+                tags: ["friends-to-lovers", "emotional", "realistic", "personal-growth", "slow-burn", "transformative-love", "modern-setting", "nostalgic"]
             }
         ];
 
@@ -209,7 +236,7 @@
         const totalQuestionsSpan = document.getElementById('total-questions');
         const recommendedBookDiv = document.getElementById('recommended-book');
         const bookImage = document.getElementById('book-image');
-        const bookTitle = document.getElementById('book-title'); // Düzeltildi
+        const bookTitle = document.getElementById('book-title');
         const bookAuthor = document.getElementById('book-author');
         const bookDescription = document.getElementById('book-description');
         const bookLink = document.getElementById('book-link');
